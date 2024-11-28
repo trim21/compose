@@ -21,6 +21,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -124,6 +125,7 @@ func upCommand(p *ProjectOptions, dockerCli command.Cli, backend api.Service) *c
 			return validateFlags(&up, &create)
 		}),
 		RunE: p.WithServices(dockerCli, func(ctx context.Context, project *types.Project, services []string) error {
+			sort.Strings(services)
 			create.ignoreOrphans = utils.StringToBool(project.Environment[ComposeIgnoreOrphans])
 			if create.ignoreOrphans && create.removeOrphans {
 				return fmt.Errorf("cannot combine %s and --remove-orphans", ComposeIgnoreOrphans)
